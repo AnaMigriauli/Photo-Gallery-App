@@ -1,9 +1,10 @@
-import "./App.css";
+import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { GalleryProvider } from "./GalleryContext";
+import "./App.css";
 import HomePage from "./HomePage";
 import HistoryPage from "./HistoryPage";
 import Navigation from "./Navigation";
-import { useState } from "react";
 
 const queryClient = new QueryClient();
 
@@ -12,10 +13,12 @@ const App: React.FC = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div>
-        <Navigation setCurrentPage={setCurrentPage} />
-        {currentPage === "home" ? <HomePage /> : <HistoryPage />}
-      </div>
+      <GalleryProvider>
+        <div>
+          <Navigation setCurrentPage={setCurrentPage} />
+          {currentPage === "home" ? <HomePage /> : <HistoryPage />}
+        </div>
+      </GalleryProvider>
     </QueryClientProvider>
   );
 };

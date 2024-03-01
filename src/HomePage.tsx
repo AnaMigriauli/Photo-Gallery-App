@@ -1,8 +1,11 @@
 import { useGallery } from "./GalleryContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const HomePage: React.FC = () => {
   const { data, isLoading, error, executeSearch } = useGallery();
+  const [searchPhoto, setSearchPhoto] = useState<string>("");
+
+  console.log(data);
 
   useEffect(() => {
     executeSearch("");
@@ -15,17 +18,36 @@ const HomePage: React.FC = () => {
   if (error) {
     return <div>Error: {error.toString()}</div>;
   }
+  const handlephotoSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchPhoto(e.target.value);
+  };
+
+  const handleEnterForSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      searchPhoto.trim() !== "" && executeSearch(searchPhoto);
+    }
+  };
+  console.log(searchPhoto);
 
   return (
     <div>
-      <input placeholder="Search..." />
-      {data && (
-        <div>
-          {data.map((photo) => (
-            <img key={photo.id} src={photo.urls.small} alt="ana" />
-          ))}
-        </div>
-      )}
+      <input
+        type="text"
+        placeholder="Search..."
+        value={searchPhoto}
+        onChange={handlephotoSearch}
+        onKeyDown={handleEnterForSearch}
+      />
+
+      <div>
+        {data?.map((photo) => (
+          <img
+            key={photo.id}
+            src={photo.urls.small}
+            alt={photo.alt_description}
+          />
+        ))}
+      </div>
     </div>
   );
 };

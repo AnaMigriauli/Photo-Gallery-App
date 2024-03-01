@@ -30,42 +30,46 @@ interface GalleryProviderProps {
 const accessKey = "L2sqDC0mPRAmNahheL0QLjwgIqNLwj8b59SXSG7UncQ";
 
 export const GalleryProvider: FC<GalleryProviderProps> = ({ children }) => {
-  const [searchHistory, setSearchHistory] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
 
   const fetchGallery = async ({
     queryKey,
   }: QueryFunctionContext<[string, string]>) => {
     const [, query] = queryKey;
-    const response = await fetch(
-      `https://api.unsplash.com/photos?order_by=popular&per_page=20${
-        query ? `&query=${query}` : ""
-      }`,
-      {
-        headers: {
-          Authorization: `Client-ID ${accessKey}`,
-        },
-      }
-    );
+    console.log(queryKey);
+    let url = "https://api.unsplash.com/photos?order_by=popular&per_page=20";
+    if (query) {
+      url = `https://api.unsplash.com/search/photos?query=${query}&per_page=20`;
+    }
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Client-ID ${accessKey}`,
+      },
+    });
 
     if (!response.ok) {
       throw new Error("Error fetching from Unsplash API");
     }
 
-    return response.json();
+    const jsonData = await response.json();
+    return query ? jsonData.results : jsonData;
   };
 
-  const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["photos", ""],
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["photos", searchTerm],
     queryFn: fetchGallery,
     enabled: true,
   });
-  const executeSearch = (query: string) => {
-    if (query !== searchHistory[searchHistory.length - 1]) {
-      refetch({ queryKey: ["photos", query] });
+
+  const executeSearch = async (query: string) => {
+    if (!searchHistory.includes(query)) {
+      setSearchTerm(query);
       setSearchHistory((prevHistory) => [...prevHistory, query]);
     }
   };
 
+  console.log(searchHistory);
   return (
     <GalleryContext.Provider
       value={{ data, isLoading, error, searchHistory, executeSearch }}

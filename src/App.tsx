@@ -1,3 +1,4 @@
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { GalleryProvider } from "./GalleryContext";
@@ -19,6 +20,7 @@ const App: React.FC = () => {
           {currentPage === "home" ? <HomePage /> : <HistoryPage />}
         </div>
       </GalleryProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 };

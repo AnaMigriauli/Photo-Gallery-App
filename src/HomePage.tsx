@@ -1,15 +1,15 @@
-import { useGallery } from "./GalleryContext";
-import { useEffect, useState } from "react";
+import { useGallery } from './GalleryContext';
+import { useEffect, useState } from 'react';
 
 const HomePage: React.FC = () => {
   const { data, isLoading, error, executeSearch } = useGallery();
-  const [searchPhoto, setSearchPhoto] = useState<string>("");
+  const [searchPhoto, setSearchPhoto] = useState<string>('');
 
   console.log(data);
 
   useEffect(() => {
-    executeSearch("");
-  }, [executeSearch]);
+    executeSearch(searchPhoto);
+  }, []);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -23,8 +23,8 @@ const HomePage: React.FC = () => {
   };
 
   const handleEnterForSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      searchPhoto.trim() !== "" && executeSearch(searchPhoto);
+    if (e.key === 'Enter') {
+      searchPhoto.trim() !== '' && executeSearch(searchPhoto);
     }
   };
   console.log(searchPhoto);
@@ -41,11 +41,7 @@ const HomePage: React.FC = () => {
 
       <div>
         {data?.map((photo) => (
-          <img
-            key={photo.id}
-            src={photo.urls.small}
-            alt={photo.alt_description}
-          />
+          <img key={photo.id} src={photo.urls.small} alt={photo.alt_descrition} />
         ))}
       </div>
     </div>
